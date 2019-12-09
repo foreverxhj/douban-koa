@@ -1,7 +1,7 @@
 <!--
  * @Author: xuhj
  * @Date: 2019-12-04 17:37:09
- * @LastEditTime: 2019-12-09 15:38:05
+ * @LastEditTime: 2019-12-09 17:16:30
  * @Description: 
  -->
 # 基于Koa的豆瓣预告片网站
@@ -13,3 +13,5 @@
 ### 新增模板引擎中间件
 ## daily-5-6
 ### 新增预告片首页 Dplay视频播放
+## daily-6-1
+### 添加爬虫模块 puppeteer
