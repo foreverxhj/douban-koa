@@ -1,7 +1,7 @@
 <!--
  * @Author: xuhj
  * @Date: 2019-12-04 17:37:09
- * @LastEditTime: 2019-12-09 17:29:29
+ * @LastEditTime: 2019-12-09 19:03:25
  * @Description: 
  -->
 # 基于Koa的豆瓣预告片网站
@@ -17,3 +17,5 @@
 ### 添加爬虫模块 puppeteer
 ## daily-6-2
 ### 添加爬虫子进程跑爬虫脚本
+## daily-6-3
+### 增加对豆瓣api的爬取

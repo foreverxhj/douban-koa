@@ -1,7 +1,7 @@
 /*
  * @Author: xuhj
  * @Date: 2019-12-09 17:27:27
- * @LastEditTime: 2019-12-09 17:28:20
+ * @LastEditTime: 2019-12-09 18:53:04
  * @Description: 运行爬虫任务
  */
 const cp = require( 'child_process' )
@@ -23,7 +23,7 @@ const { resolve } = require( 'path' )
         child.on( 'exit', code => {
             if ( invoked ) return
 
-            invoked = false
+            invoked = true
             let err = code === 0 ? null : new Error( 'exit code ' + code )
 
             console.log( err )
