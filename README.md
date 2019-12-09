@@ -1,7 +1,7 @@
 <!--
  * @Author: xuhj
  * @Date: 2019-12-04 17:37:09
- * @LastEditTime: 2019-12-09 14:59:45
+ * @LastEditTime: 2019-12-09 15:38:05
  * @Description: 
  -->
 # 基于Koa的豆瓣预告片网站
@@ -11,3 +11,5 @@
 ### 新增 pug  ejs 模板引擎 
 ## daily-5-5
 ### 新增模板引擎中间件
+## daily-5-6
+### 新增预告片首页 Dplay视频播放
