@@ -1,9 +1,9 @@
 /*
  * @Author: xuhj
  * @Date: 2019-12-10 13:44:51
- * @LastEditTime: 2019-12-10 14:19:41
+ * @LastEditTime: 2019-12-10 14:49:58
  * @Description: 
- */
+ */ 
 const { readFile } = require( 'fs' )
 const EventEmitter = require( 'events' )
 
