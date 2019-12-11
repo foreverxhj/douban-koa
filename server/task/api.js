@@ -1,41 +1,117 @@
 /*
  * @Author: xuhj
  * @Date: 2019-12-09 18:50:04
- * @LastEditTime: 2019-12-09 19:02:09
+ * @LastEditTime: 2019-12-11 09:23:59
  * @Description: 
  */
 // const api = 'https://douban.uieee.com'
 
 const rp = require( 'request-promise-native' )
 
+const mongoose = require( 'mongoose' )
+const Movie = mongoose.model( 'Movie' )
+const Category = mongoose.model( 'Category' )
+
 async function fetchMovie ( item ) {
-    const url = `https://douban-api.uieee.com/v2/movie/subject/${ item.doubanId }`
+    const url = `https://douban-api.uieee.com/v2/movie/${ item.doubanId }`
     const res = await rp( url )
-    return res
+    let body
+
+    try {
+        body = JSON.parse( res )
+    } catch ( err ) {
+        console.log( err )
+    }
+
+    return body
 }
 ; ( async () => {
-    let movies = [ {
-        doubanId: 30318116,
-        title: '利刃出鞘',
-        rate: 8.3,
-        poster: 'https://img1.doubanio.com/view/photo/l_ratio_poster/public/p2574172427.jpg'
-    },
-    {
-        doubanId: 30166972,
-        title: '少年的你',
-        rate: 8.4,
-        poster: 'https://img3.doubanio.com/view/photo/l_ratio_poster/public/p2572166063.jpg'
-    }]
-    
-    movies.map( async movie => {
+    let movies = await Movie.find( {
+        $or: [
+            { summary: { $exists: false } },
+            { summary: null },
+            {
+                year: {
+                    $exists: false
+                }
+            },
+            { title: '' },
+            { summary: '' }
+        ]
+    } )
+
+    for ( let i = 0; i < movies.length; i++ ) {
+        let movie = movies[ i ]
         let movieData = await fetchMovie( movie )
-        try {
-            movieData = JSON.parse(movieData)
-            console.log( movieData.summary )
-            console.log('==============')
-        } catch ( err ) {
-            console.log(err)
+        if ( movieData ) {
+            let tags = movieData.tags || []
+
+            movie.tags = movie.tags || []
+            movie.summary = movieData.summary || ''
+            movie.title = movieData.alt_title || movieData.title || ''
+            movie.rawTitle = movieData.title
+
+
+            if ( movieData.attrs ) {
+                movie.movieTypes = movieData.attrs.movie_type || []
+                movie.year = movieData.attrs.year[ 0 ] || 2500
+                for ( let i = 0; i < movie.movieTypes.length; i++ ) {
+                    let item = movie.movieTypes[ i ]
+                    let cat = await Category.findOne( {
+                        name: item
+                    } )
+
+                    if ( !cat ) {
+                        cat = new Category( {
+                            name: item,
+                            movies: [ movie._id ]
+                        } )
+                    } else {
+                        if ( cat.movies.indexOf( movie._id ) === -1 ) {
+                            cat.movies.push( movie._id )
+                        }
+                    }
+
+                    await cat.save()
+
+                    if ( !movie.category ) {
+                        // console.log('====',cat._id)
+                        movie.category.push( cat._id )
+                    } else {
+                        if ( movie.category.indexOf( cat._id ) === -1 ) {
+                            movie.category.push( cat._id )
+                        }
+                    }
+                }
+
+                let dates = movieData.attrs.pubdate || []
+                let pubdates = []
+
+                dates.map( item => {
+                    if ( item && item.split( '(' ).length > 0 ) {
+                        let parts = item.split( '(' )
+                        let date = parts[ 0 ]
+                        let country = '未知'
+
+                        if ( parts[ 1 ] ) {
+                            country = parts[ 1 ].split( '(' )[ 0 ]
+                        }
+
+                        pubdates.push( {
+                            date: new Date( date ),
+                            country
+                        } )
+                    }
+                } )
+
+                movie.pubdate = pubdates
+            }
+
+            tags.forEach( tag => {
+                movie.tags.push( tag.name )
+            } )
+            await movie.save()
         }
-    })
+    }
 } )()
 

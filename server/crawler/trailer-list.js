@@ -1,7 +1,7 @@
 /*
  * @Author: xuhj
  * @Date: 2019-12-09 16:13:57
- * @LastEditTime: 2019-12-09 17:26:59
+ * @LastEditTime: 2019-12-11 08:49:17
  * @Description: 电影爬虫
  */
 const puppeteer = require( 'puppeteer' )
@@ -59,7 +59,7 @@ const sleep = time => new Promise( resolve => {
     } )
     
     brower.close()
-    console.log(result)
+    // console.log(result)
     process.send({result})
     process.exit(0)
 })()
