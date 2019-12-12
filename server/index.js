@@ -1,7 +1,7 @@
 /*
  * @Author: xuhj
  * @Date: 2019-12-04 17:40:29
- * @LastEditTime: 2019-12-11 11:09:12
+ * @LastEditTime: 2019-12-12 14:16:55
  * @Description: 
  */
 const Koa = require( 'koa' )
@@ -12,34 +12,39 @@ const views = require( 'koa-views' )
 const mongoose = require( 'mongoose' )
 const { resolve } = require( 'path' )
 const { connect, initSchemas, initAdmin } = require( './database/init' )
+const R = require( 'ramda' )
+const MIDDLEWARES = [ 'router' ]
+
+const useMiddlewares = ( app ) => {
+    R.map(
+        R.compose(
+            R.forEachObjIndexed(
+                initWith => initWith( app )
+            ),
+            require,
+            name => resolve( __dirname, `./middlewares/${ name }` )
+        )
+    )( MIDDLEWARES )
+}
+
 
     ; ( async () => {
         await connect()
-        
+
         initSchemas()
 
         await initAdmin()
 
         // require( './task/movie' )
-        
+
         // require('./task/api')
 
         // require('./task/trailer')
-        
-    } )();
 
-const app = new Koa()
+        const app = new Koa()
 
-app.use( views( resolve( __dirname, './views' ), {
-    extension: 'pug'
-} ) )
+        await useMiddlewares( app )
 
-app.use( async ( ctx, next ) => {
-    await ctx.render( 'index', {
-        you: 'Luke!!',
-        me: 'Scott'
-    } )
-} )
-
-app.listen( 3000 )
-console.log( 'server is start up' )
+        app.listen( 3000 )
+        console.log( 'server is start up' )
+    } )()
