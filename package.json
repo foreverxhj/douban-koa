@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/foreverxhj/douban-koa#readme",
   "dependencies": {
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^5.0.0",
     "ejs": "^2.5.7",
     "glob": "^7.1.2",
     "koa": "^2.4.1",
